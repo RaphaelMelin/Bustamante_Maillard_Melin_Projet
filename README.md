@@ -4,6 +4,17 @@
 # Projet de Développement de Jeux 
 ## Langage de programmation au choix
 
+##Equipe
+- Bustamante Thomas
+- Maillard Paul
+- Mélin Raphaël
+
+## Technologies utilisées
+- Godot Engine
+- Gdscript
+- Discord
+- Google Doc
+
 ## Introduction : 
 
 Vous êtes chargé de travailler en groupe sur un projet de développement de jeux. Les jeux disponibles pour le projet sont :
