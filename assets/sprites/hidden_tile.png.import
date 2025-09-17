@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bvaxlwp87truw"
-path="res://.godot/imported/case.png-0c892fb22642de93121fa1486ef65193.ctex"
+uid="uid://d3l8tr3qcynt6"
+path="res://.godot/imported/hidden_tile.png-eafe6109b6410183c54d829ff230ab9e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/case.png"
-dest_files=["res://.godot/imported/case.png-0c892fb22642de93121fa1486ef65193.ctex"]
+source_file="res://assets/sprites/hidden_tile.png"
+dest_files=["res://.godot/imported/hidden_tile.png-eafe6109b6410183c54d829ff230ab9e.ctex"]
 
 [params]
 
