@@ -7,6 +7,10 @@ enum UPPER_LAYER {FLAG, BOMB, QUESTION_MARK, NONE}
 func _ready() -> void:
 	# appeler randomize garantit un résultat pseudo aléatoire
 	randomize()
+	generate_matrice()
+
+func generate_matrice() -> void: 
+	
 	
 	for x in range(columns):
 		for y in range(columns):
