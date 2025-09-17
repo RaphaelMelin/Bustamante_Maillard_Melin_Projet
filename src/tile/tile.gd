@@ -1,6 +1,6 @@
 extends Button
 	
-	
+class_name Tile
 signal left_click
 signal right_click
 var type : TYPE
@@ -13,6 +13,9 @@ func _ready():
 
 func set_type(type_):
 	type = type_
+	match type_:
+		TYPE.BOMB:
+			icon=preload("res://assets/sprites/bomb.png")
 
 func get_type():
 	return type

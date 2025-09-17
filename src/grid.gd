@@ -13,17 +13,28 @@ func _ready() -> void:
 	# appeler randomize garantit un résultat pseudo aléatoire
 	randomize()
 	bomb_counter=0
+	
+	# Initialiser la matrice
+	var unasigned_tiles : Array = []
 	for x in range(columns):
 		var line : Array = []
 		for y in range(columns):
 			var tile : Button = tile_path.instantiate()
-			if bomb_counter<10:
-				tile.set_type(TYPE.BOMB)
-				bomb_counter=bomb_counter+1
+			unasigned_tiles.append(tile)
+
 			add_child(tile)
 			line.append(tile)
 		matrice.append(line)
-	matrice.shuffle()
+		
+	# Assigner les bombes
+	unasigned_tiles.shuffle()
+	for tile in unasigned_tiles:
+		if bomb_counter<10:
+			tile.set_type(TYPE.BOMB)
+			bomb_counter = bomb_counter+1
+		else:
+			break
+	
 	print(matrice)
 	
 func get_neighbor_tiles(cell : Vector2i) -> Array:
