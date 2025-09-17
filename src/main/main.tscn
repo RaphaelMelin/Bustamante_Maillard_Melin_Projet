@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://vlwhnsruiek0"]
+[gd_scene load_steps=3 format=3 uid="uid://vlwhnsruiek0"]
 
 [ext_resource type="Script" uid="uid://eyha5enj747h" path="res://src/main/main.gd" id="1_eewff"]
+[ext_resource type="Script" uid="uid://5yhakxxl7vyk" path="res://src/grid.gd" id="2_ab7mr"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -32,5 +33,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "0:00"
 
-[node name="Grid" type="HBoxContainer" parent="VBoxContainer"]
+[node name="Grid" type="BoxContainer" parent="VBoxContainer"]
 layout_mode = 2
+script = ExtResource("2_ab7mr")
