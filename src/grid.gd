@@ -2,7 +2,7 @@ extends GridContainer
 
 var matrice : Array = []
 var tile_path : PackedScene = preload("res://src/tile/tile.tscn")
-var bomb_counter : int
+var bomb_count : int
 var neighbors_directions : Array[Vector2i ] = [
 	Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1),
 	Vector2i(1, 1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1)
@@ -12,35 +12,62 @@ enum TYPE {FLAG, BOMB, QUESTION_MARK, NONE}
 func _ready() -> void:
 	# appeler randomize garantit un résultat pseudo aléatoire
 	randomize()
-	bomb_counter=0
+	bomb_count=0
+	generate_matrice()
 	
+func generate_matrice() -> void:
 	# Initialiser la matrice
 	var unasigned_tiles : Array = []
 	for x in range(columns):
 		var line : Array = []
 		for y in range(columns):
+			# On instantie une case
 			var tile : Button = tile_path.instantiate()
+			tile.set_grid_coords(Vector2i(x, y))
 			unasigned_tiles.append(tile)
-
+			
+			# Ajouter la case à la scène
 			add_child(tile)
 			line.append(tile)
+			
+		# Ajouter la ligne de cases à la matrice
 		matrice.append(line)
 		
-	# Assigner les bombes
+	
+	# Mélanger les cases pour garantir un résultat pseudo aléatoire
 	unasigned_tiles.shuffle()
-	for tile in unasigned_tiles:
-		if bomb_counter<10:
-			tile.set_type(TYPE.BOMB)
-			bomb_counter = bomb_counter+1
+	
+	# Assigner les bombes à la matrice
+	for tile : Tile in unasigned_tiles:
+		if bomb_count < 10:
+			# Assigner le type BOMB à la case
+			#tile.set_type(TYPE.BOMB)
+			tile.set_value(-1)
+			tile.refresh_icon()
+			bomb_count = bomb_count + 1
+			
+			var grid_coords = tile.get_grid_coords()
+			for neighbor_tile : Tile in get_neighbor_tiles(grid_coords):
+				neighbor_tile.increment_nearby_bombs_count()
+				neighbor_tile.increment_value()	
+				neighbor_tile.refresh_icon()
 		else:
 			break
 	
 	print(matrice)
 	
-func get_neighbor_tiles(cell : Vector2i) -> Array:
+func get_neighbor_tiles(grid_coords : Vector2i) -> Array:
 	# Renvoie la liste de tout les voisins
-	var neighbors: Array = []
-	for dir : Vector2i in neighbors_directions:
-		var neighbor : Vector2i = cell + dir
-		neighbors.append(neighbor)
-	return neighbors
+	var neighbor_tiles: Array = []
+	for direction : Vector2i in neighbors_directions:
+		var neighbor_grid_coords : Vector2i = grid_coords + direction
+		var neighbor_tile = get_tile(neighbor_grid_coords)
+		if neighbor_tile != null:
+			neighbor_tiles.append(neighbor_tile)
+	return neighbor_tiles
+
+func get_tile(grid_coords: Vector2i) -> Tile:
+	if grid_coords.x < 0 or grid_coords.x >= matrice.size() or \
+	   grid_coords.y < 0 or grid_coords.y >= matrice.size():
+		return null
+	return matrice[grid_coords.x][grid_coords.y]
