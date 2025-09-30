@@ -1,9 +1,12 @@
-[gd_scene load_steps=5 format=3 uid="uid://vlwhnsruiek0"]
+[gd_scene load_steps=6 format=3 uid="uid://vlwhnsruiek0"]
 
 [ext_resource type="Script" uid="uid://eyha5enj747h" path="res://src/main/main.gd" id="1_eewff"]
 [ext_resource type="Script" uid="uid://5yhakxxl7vyk" path="res://src/grid.gd" id="2_ab7mr"]
-[ext_resource type="Texture2D" uid="uid://c5c8j3t57gabb" path="res://assets/sprites/test_hearder.webp" id="2_djufw"]
+[ext_resource type="Texture2D" uid="uid://hkoek0tqqc2s" path="res://icon.svg" id="2_djufw"]
 [ext_resource type="Script" uid="uid://bkeso82xu2gf5" path="res://src/main/timer_lbl.gd" id="3_djufw"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jkpqq"]
+texture = ExtResource("2_djufw")
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -22,24 +25,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Header" type="HBoxContainer" parent="VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_jkpqq")
+
+[node name="Header" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer/Header"]
-layout_mode = 2
-size_flags_horizontal = 3
-texture = ExtResource("2_djufw")
-expand_mode = 3
-stretch_mode = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Header"]
-layout_mode = 2
-
-[node name="TimerLbl" type="Label" parent="VBoxContainer/Header/HBoxContainer"]
+[node name="TimerLbl" type="Label" parent="VBoxContainer/PanelContainer/Header"]
 layout_mode = 2
 script = ExtResource("3_djufw")
 
-[node name="BombNbrLbl" type="Label" parent="VBoxContainer/Header/HBoxContainer"]
+[node name="BombNbrLbl" type="Label" parent="VBoxContainer/PanelContainer/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "10"
