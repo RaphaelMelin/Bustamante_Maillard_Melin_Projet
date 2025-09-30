@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c8vqj13e3560x"
-path="res://.godot/imported/bomb.png-582a23d1dce9175afe43059a30aaded8.ctex"
+uid="uid://c5c8j3t57gabb"
+path="res://.godot/imported/test_hearder.webp-cbd7f336fd934e977e831f58e3c91b99.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/bomb.png"
-dest_files=["res://.godot/imported/bomb.png-582a23d1dce9175afe43059a30aaded8.ctex"]
+source_file="res://assets/sprites/test_hearder.webp"
+dest_files=["res://.godot/imported/test_hearder.webp-cbd7f336fd934e977e831f58e3c91b99.ctex"]
 
 [params]
 
