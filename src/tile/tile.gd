@@ -3,14 +3,14 @@ extends Button
 class_name Tile
 signal left_click
 signal right_click
-var type : TYPE
-enum TYPE {FLAG, BOMB, NONE}
+var type : TYPE = TYPE.NONE
+enum TYPE {FLAG, BOMB, NONE, UNVEILED}
 
 var value : int = 0
 var nearby_bombs_count = 0
 var grid_coords : Vector2i
 
-
+signal right_click_tile_0
 
 # Méthodes privées
 
@@ -23,11 +23,15 @@ func _on_Button_gui_input(event):
 			MOUSE_BUTTON_LEFT:
 				print("clic gauche")
 				emit_signal("left_click")
-				refresh_icon()
+				if type==TYPE.NONE:
+					refresh_icon()
+					if value==0:
+						emit_signal("right_click_tile_0", self)
 			MOUSE_BUTTON_RIGHT:
 				print("clic droit")
 				emit_signal("right_click")
-				put_memo()
+				if type!=TYPE.UNVEILED:
+					put_memo()
 
 
 # Méthodes publiques
