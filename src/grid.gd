@@ -3,12 +3,13 @@ extends GridContainer
 var matrice : Array = []
 var tile_path : PackedScene = preload("res://src/tile/tile.tscn")
 var bomb_count : int
+var total_bombs : int = 10
 var neighbors_directions : Array[Vector2i ] = [
 	Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1),
 	Vector2i(1, 1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1)
 ]
-enum TYPE {FLAG, BOMB, QUESTION_MARK, NONE}
-
+enum TYPE {FLAG, BOMB, NONE}
+@export var bomb_count_lbl : Label
 func _ready() -> void:
 	# appeler randomize garantit un résultat pseudo aléatoire
 	randomize()
@@ -16,6 +17,7 @@ func _ready() -> void:
 	generate_matrice()
 	
 func generate_matrice() -> void:
+	bomb_count_lbl.text = str(total_bombs)
 	# Initialiser la matrice
 	var unasigned_tiles : Array = []
 	for x in range(columns):
@@ -39,19 +41,19 @@ func generate_matrice() -> void:
 	
 	# Assigner les bombes à la matrice
 	for tile : Tile in unasigned_tiles:
-		if bomb_count < 10:
+		if bomb_count < total_bombs:
 			# Assigner le type BOMB à la case
-			#tile.set_type(TYPE.BOMB)
 			tile.set_value(-1)
-			tile.refresh_icon()
 			bomb_count = bomb_count + 1
 			
 			var grid_coords = tile.get_grid_coords()
 			for neighbor_tile : Tile in get_neighbor_tiles(grid_coords):
 				neighbor_tile.increment_nearby_bombs_count()
 				neighbor_tile.increment_value()	
-				neighbor_tile.refresh_icon()
+				#neighbor_tile.refresh_icon()
 		else:
+			tile.set_type(TYPE.NONE)
+			tile.refresh_memo()
 			break
 	
 	print(matrice)
