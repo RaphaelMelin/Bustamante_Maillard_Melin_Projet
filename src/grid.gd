@@ -89,13 +89,14 @@ func left_click_tile_0(tile : Tile) -> void:
 				neighbor.refresh_icon()
 	tile.refresh_icon()
 	
-func left_click_tile_bomb(tile : Tile) -> void:
-	var neighbor_tiles : Array = get_neighbor_tiles(tile.get_grid_coords())
-	tile.set_type(Tile.TYPE.UNVEILED)
-	for neighbor:Tile in neighbor_tiles:
-		if neighbor.type!=Tile.TYPE.UNVEILED and neighbor.type!=Tile.TYPE.FLAG:
-			left_click_tile_bomb(neighbor)
-	tile.refresh_icon()
+func left_click_tile_bomb() -> void:
+	for x in range(columns):
+		for y in range(columns):
+			var coords_tile : Vector2i = Vector2i(x, y)
+			var tile : Tile =  get_tile(coords_tile)
+			if tile.value==-1 and tile.type!=Tile.TYPE.FLAG:
+				tile.set_type(Tile.TYPE.UNVEILED)
+				tile.refresh_icon()
 	
 func right_click_on() -> void:
 	bomb_count=bomb_count-1
