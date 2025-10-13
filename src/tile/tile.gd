@@ -29,7 +29,7 @@ func _on_Button_gui_input(event):
 					if value==0:
 						emit_signal("left_click_tile_0", self)
 					if value==-1:
-						emit_signal("left_click_tile_bomb", self)
+						emit_signal("left_click_tile_bomb")
 			MOUSE_BUTTON_RIGHT:
 				print("clic droit")
 				if type!=TYPE.UNVEILED:
@@ -100,5 +100,6 @@ func refresh_memo() -> void:
 	match type:
 		TYPE.FLAG : icon_name = "flag"
 		TYPE.NONE : icon_name = "tile"
+		TYPE.UNVEILED : icon_name = "blank"
 	
 	icon = load("res://assets/sprites/" + icon_name + ".png")
