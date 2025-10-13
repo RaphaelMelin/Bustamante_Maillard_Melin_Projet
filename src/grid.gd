@@ -26,6 +26,7 @@ func generate_matrice() -> void:
 			# On instantie une case
 			var tile : Button = tile_path.instantiate()
 			tile.connect("right_click_tile_0", self.right_click_tile_0)
+			tile.connect("right_click_tile_bomb", self.right_click_tile_bomb)
 			tile.set_grid_coords(Vector2i(x, y))
 			unasigned_tiles.append(tile)
 			
@@ -84,4 +85,12 @@ func right_click_tile_0(tile : Tile) -> void:
 			else :
 				neighbor.set_type(Tile.TYPE.UNVEILED)
 				neighbor.refresh_icon()
+	tile.refresh_icon()
+	
+func right_click_tile_bomb(tile : Tile) -> void:
+	var neighbor_tiles : Array = get_neighbor_tiles(tile.get_grid_coords())
+	tile.set_type(Tile.TYPE.UNVEILED)
+	for neighbor:Tile in neighbor_tiles:
+		if neighbor.type!=Tile.TYPE.UNVEILED and neighbor.type!=Tile.TYPE.FLAG:
+			right_click_tile_bomb(neighbor)
 	tile.refresh_icon()

@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://eyha5enj747h" path="res://src/main/main.gd" id="1_eewff"]
 [ext_resource type="Script" uid="uid://5yhakxxl7vyk" path="res://src/grid.gd" id="2_ab7mr"]
-[ext_resource type="Script" path="res://src/main/timer_lbl.gd" id="3_djufw"]
-[ext_resource type="PackedScene" uid="uid://dejo10054ka5j" path="res://test.tscn" id="4_djufw"]
+
+[ext_resource type="Script" path="res://src/main/timer_lbl.gd" id="3_djufw"][ext_resource type="PackedScene" uid="uid://dejo10054ka5j" path="res://test.tscn" id="4_djufw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ab7mr"]
 border_width_left = 15
@@ -56,7 +56,6 @@ script = ExtResource("3_djufw")
 [node name="BombNbrLbl" type="Label" parent="PanelContainer/VBoxContainer/PanelContainer/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "10"
 
 [node name="Grid" type="GridContainer" parent="PanelContainer" node_paths=PackedStringArray("bomb_count_lbl")]
 layout_mode = 2
@@ -66,4 +65,5 @@ theme_override_constants/h_separation = -6
 theme_override_constants/v_separation = -6
 columns = 9
 script = ExtResource("2_ab7mr")
+
 bomb_count_lbl = NodePath("../VBoxContainer/PanelContainer/Header/BombNbrLbl")

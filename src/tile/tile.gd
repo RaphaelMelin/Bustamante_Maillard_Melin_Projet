@@ -11,7 +11,7 @@ var nearby_bombs_count = 0
 var grid_coords : Vector2i
 
 signal right_click_tile_0
-
+signal right_click_tile_bomb
 # Méthodes privées
 
 func _ready():
@@ -27,6 +27,8 @@ func _on_Button_gui_input(event):
 					refresh_icon()
 					if value==0:
 						emit_signal("right_click_tile_0", self)
+					if value==-1:
+						emit_signal("right_click_tile_bomb", self)
 			MOUSE_BUTTON_RIGHT:
 				print("clic droit")
 				emit_signal("right_click")
