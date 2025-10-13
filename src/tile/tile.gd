@@ -2,7 +2,8 @@ extends Button
 	
 class_name Tile
 signal left_click
-signal right_click
+signal right_click_on
+signal right_click_off
 var type : TYPE = TYPE.NONE
 enum TYPE {FLAG, BOMB, NONE, UNVEILED}
 
@@ -10,8 +11,8 @@ var value : int = 0
 var nearby_bombs_count = 0
 var grid_coords : Vector2i
 
-signal right_click_tile_0
-signal right_click_tile_bomb
+signal left_click_tile_0
+signal left_click_tile_bomb
 # Méthodes privées
 
 func _ready():
@@ -26,12 +27,11 @@ func _on_Button_gui_input(event):
 				if type==TYPE.NONE:
 					refresh_icon()
 					if value==0:
-						emit_signal("right_click_tile_0", self)
+						emit_signal("left_click_tile_0", self)
 					if value==-1:
-						emit_signal("right_click_tile_bomb", self)
+						emit_signal("left_click_tile_bomb", self)
 			MOUSE_BUTTON_RIGHT:
 				print("clic droit")
-				emit_signal("right_click")
 				if type!=TYPE.UNVEILED:
 					put_memo()
 
@@ -90,8 +90,10 @@ func increment_value() -> void:
 func put_memo() -> void :
 	if type==TYPE.NONE:
 		set_type(TYPE.FLAG)
+		emit_signal("right_click_on")
 	elif type==TYPE.FLAG:
 		set_type(TYPE.NONE)
+		emit_signal("right_click_off")
 
 func refresh_memo() -> void:
 	var icon_name : String

@@ -25,8 +25,10 @@ func generate_matrice() -> void:
 		for y in range(columns):
 			# On instantie une case
 			var tile : Button = tile_path.instantiate()
-			tile.connect("right_click_tile_0", self.right_click_tile_0)
-			tile.connect("right_click_tile_bomb", self.right_click_tile_bomb)
+			tile.connect("left_click_tile_0", self.left_click_tile_0)
+			tile.connect("left_click_tile_bomb", self.left_click_tile_bomb)
+			tile.connect("right_click_on", self.right_click_on)
+			tile.connect("right_click_off", self.right_click_off)
 			tile.set_grid_coords(Vector2i(x, y))
 			unasigned_tiles.append(tile)
 			
@@ -75,22 +77,30 @@ func get_tile(grid_coords: Vector2i) -> Tile:
 		return null
 	return matrice[grid_coords.x][grid_coords.y]
 	
-func right_click_tile_0(tile : Tile) -> void:
+func left_click_tile_0(tile : Tile) -> void:
 	var neighbor_tiles : Array = get_neighbor_tiles(tile.get_grid_coords())
 	tile.set_type(Tile.TYPE.UNVEILED)
 	for neighbor:Tile in neighbor_tiles:
 		if neighbor.type!=Tile.TYPE.UNVEILED:
 			if neighbor.value==0:
-				right_click_tile_0(neighbor)
+				left_click_tile_0(neighbor)
 			else :
 				neighbor.set_type(Tile.TYPE.UNVEILED)
 				neighbor.refresh_icon()
 	tile.refresh_icon()
 	
-func right_click_tile_bomb(tile : Tile) -> void:
+func left_click_tile_bomb(tile : Tile) -> void:
 	var neighbor_tiles : Array = get_neighbor_tiles(tile.get_grid_coords())
 	tile.set_type(Tile.TYPE.UNVEILED)
 	for neighbor:Tile in neighbor_tiles:
 		if neighbor.type!=Tile.TYPE.UNVEILED and neighbor.type!=Tile.TYPE.FLAG:
-			right_click_tile_bomb(neighbor)
+			left_click_tile_bomb(neighbor)
 	tile.refresh_icon()
+	
+func right_click_on() -> void:
+	bomb_count=bomb_count-1
+	bomb_count_lbl.text = str(bomb_count)
+	
+func right_click_off() -> void:
+	bomb_count=bomb_count+1
+	bomb_count_lbl.text = str(bomb_count)
