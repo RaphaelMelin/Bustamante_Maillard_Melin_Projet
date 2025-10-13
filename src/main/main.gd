@@ -4,6 +4,15 @@ var fullscreen : bool = false
 
 func _ready() -> void:
 	print("Hello world")
+	
+	# Test data
+	var data : Dictionary = DataManager.load_data("user://player_data.save")
+	print(data)
+	
+	
+	
+	
+	
 
 func _input(_event : InputEvent) -> void:
 	# Pour mettre en plein écran
