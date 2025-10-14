@@ -7,6 +7,8 @@ signal right_click_on
 signal right_click_off
 signal unveil_tiles_recursive
 signal left_click_tile_bomb
+signal game_ended
+signal game_started
 
 enum TYPE {FLAG, BOMB, NONE, UNVEILED}
 var type : TYPE = TYPE.NONE
@@ -26,8 +28,8 @@ func _on_Button_gui_input(event):
 		match event.button_index:
 			MOUSE_BUTTON_LEFT:
 				print("clic gauche")
-				emit_signal("left_click")
 				if type==TYPE.NONE:
+					emit_signal("game_started")
 					refresh_icon()
 					if value==0:
 						emit_signal("unveil_tiles_recursive", self)
