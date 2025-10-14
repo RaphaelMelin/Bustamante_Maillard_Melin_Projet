@@ -1,7 +1,6 @@
 extends Control
 
-var timer
-@onready var grid: GridContainer = $VBoxContainer/Grid
+
 var fullscreen : bool = false
 
 func _ready() -> void:

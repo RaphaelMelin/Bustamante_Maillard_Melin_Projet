@@ -1,9 +1,9 @@
 [gd_scene load_steps=8 format=3 uid="uid://vlwhnsruiek0"]
 
 [ext_resource type="Script" uid="uid://eyha5enj747h" path="res://src/main/main.gd" id="1_eewff"]
-[ext_resource type="Script" uid="uid://5yhakxxl7vyk" path="res://src/grid.gd" id="2_ab7mr"]
-[ext_resource type="Script" uid="uid://bkeso82xu2gf5" path="res://src/main/timer_lbl.gd" id="3_djufw"]
+[ext_resource type="Script" path="res://src/main/timer_lbl.gd" id="3_djufw"]
 [ext_resource type="PackedScene" uid="uid://dejo10054ka5j" path="res://src/background/background.tscn" id="4_djufw"]
+[ext_resource type="PackedScene" uid="uid://oc3h2ymwk5s4" path="res://src/grid/grid.tscn" id="4_jkpqq"]
 [ext_resource type="PackedScene" uid="uid://dsji6che58rfa" path="res://src/ranking/ranking.tscn" id="5_jkpqq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ab7mr"]
@@ -55,9 +55,7 @@ size_flags_horizontal = 3
 [node name="BombNbrLbl" type="Label" parent="PanelContainer/VBoxContainer/VBoxContainer/PanelContainer/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="ResetBtn" type="Button" parent="PanelContainer/VBoxContainer/VBoxContainer/PanelContainer/Header"]
-layout_mode = 2
+text = "10"
 
 [node name="TimerLbl" type="Label" parent="PanelContainer/VBoxContainer/VBoxContainer/PanelContainer/Header"]
 layout_mode = 2
@@ -65,18 +63,19 @@ size_flags_horizontal = 3
 text = "0:00"
 script = ExtResource("3_djufw")
 
-[node name="Ranking" parent="PanelContainer/VBoxContainer" instance=ExtResource("5_jkpqq")]
+[node name="ResetBtn" type="Button" parent="PanelContainer/VBoxContainer/VBoxContainer/PanelContainer/Header"]
 layout_mode = 2
-size_flags_horizontal = 4
+text = "Réinitialiser"
 
-[node name="Grid" type="GridContainer" parent="PanelContainer" node_paths=PackedStringArray("bomb_count_lbl")]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_constants/h_separation = -6
-theme_override_constants/v_separation = -6
-columns = 9
-script = ExtResource("2_ab7mr")
-bomb_count_lbl = NodePath("../VBoxContainer/VBoxContainer/PanelContainer/Header/BombNbrLbl")
 
-[connection signal="pressed" from="PanelContainer/VBoxContainer/VBoxContainer/PanelContainer/Header/ResetBtn" to="PanelContainer/Grid" method="_on_reset_btn_pressed"]
+[node name="Grid" parent="PanelContainer/VBoxContainer/HBoxContainer" node_paths=PackedStringArray("bomb_count_lbl") instance=ExtResource("4_jkpqq")]
+layout_mode = 2
+bomb_count_lbl = NodePath("../../VBoxContainer/PanelContainer/Header/BombNbrLbl")
+
+[node name="Ranking" parent="PanelContainer/VBoxContainer/HBoxContainer" instance=ExtResource("5_jkpqq")]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[connection signal="pressed" from="PanelContainer/VBoxContainer/VBoxContainer/PanelContainer/Header/ResetBtn" to="PanelContainer/VBoxContainer/HBoxContainer/Grid" method="_on_reset_btn_pressed"]

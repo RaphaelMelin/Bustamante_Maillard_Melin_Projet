@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://oc3h2ymwk5s4"]
+
+[ext_resource type="Script" uid="uid://5yhakxxl7vyk" path="res://src/grid/grid.gd" id="1_jsx3e"]
+
+[node name="Grid" type="GridContainer"]
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/h_separation = -6
+theme_override_constants/v_separation = -6
+columns = 9
+script = ExtResource("1_jsx3e")

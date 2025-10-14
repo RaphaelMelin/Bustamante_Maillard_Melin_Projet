@@ -1,22 +1,25 @@
+class_name Tile
+
 extends Button
 	
-class_name Tile
 signal left_click
 signal right_click_on
 signal right_click_off
-var type : TYPE = TYPE.NONE
+signal unveil_tiles_recursive
+signal left_click_tile_bomb
+
 enum TYPE {FLAG, BOMB, NONE, UNVEILED}
+var type : TYPE = TYPE.NONE
 
 var value : int = 0
 var nearby_bombs_count = 0
 var grid_coords : Vector2i
 
-signal left_click_tile_0
-signal left_click_tile_bomb
 # Méthodes privées
 
 func _ready():
 	connect("gui_input", _on_Button_gui_input)
+
 
 func _on_Button_gui_input(event):
 	if event is InputEventMouseButton and event.pressed:
@@ -27,13 +30,13 @@ func _on_Button_gui_input(event):
 				if type==TYPE.NONE:
 					refresh_icon()
 					if value==0:
-						emit_signal("left_click_tile_0", self)
+						emit_signal("unveil_tiles_recursive", self)
 					if value==-1:
 						emit_signal("left_click_tile_bomb")
 			MOUSE_BUTTON_RIGHT:
 				print("clic droit")
 				if type!=TYPE.UNVEILED:
-					put_memo()
+					put_flag()
 
 
 # Méthodes publiques
@@ -41,21 +44,21 @@ func _on_Button_gui_input(event):
 func get_type() -> TYPE:
 	return type
 
+
 func set_type(type_):
 	type = type_
-	refresh_memo()
+	refresh_front_icon()
+
 	
 func get_value() -> int:
 	return value	
+
 
 func set_value(value_ : int) -> void:
 	value = value_	
 	
 	
 func refresh_icon() -> void:
-	#match type_:
-	#	TYPE.BOMB:
-	#		icon_name = "bomb"
 	var icon_name : String
 	match value:
 		-1: icon_name = "bomb"
@@ -75,6 +78,7 @@ func refresh_icon() -> void:
 func get_grid_coords() -> Vector2i:
 	return grid_coords
 
+
 func set_grid_coords(grid_coords_ : Vector2i) -> void:
 	grid_coords = grid_coords_
 
@@ -87,7 +91,8 @@ func increment_value() -> void:
 	if value == -1: return
 	value += 1
 
-func put_memo() -> void :
+
+func put_flag() -> void :
 	if type==TYPE.NONE:
 		set_type(TYPE.FLAG)
 		emit_signal("right_click_on")
@@ -95,11 +100,15 @@ func put_memo() -> void :
 		set_type(TYPE.NONE)
 		emit_signal("right_click_off")
 
-func refresh_memo() -> void:
+
+func refresh_front_icon() -> void:
+	# Une tile retourné n'a pas de texture avant
+	if type == TYPE.UNVEILED:
+		return
+	
 	var icon_name : String
 	match type:
 		TYPE.FLAG : icon_name = "flag"
 		TYPE.NONE : icon_name = "tile"
-		TYPE.UNVEILED : icon_name = "blank"
 	
 	icon = load("res://assets/sprites/" + icon_name + ".png")

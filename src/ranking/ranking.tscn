@@ -14,18 +14,6 @@ script = ExtResource("1_kr7xd")
 layout_mode = 2
 text = "Classement :"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
-layout_mode = 2
-alignment = 2
-
-[node name="RankLbl" type="Label" parent="HBoxContainer"]
-layout_mode = 2
-text = "Rang 1"
-
-[node name="ScoreLbl" type="Label" parent="HBoxContainer"]
-layout_mode = 2
-text = "0:32"
-
 [node name="HBoxContainer2" type="HBoxContainer" parent="."]
 layout_mode = 2
 
