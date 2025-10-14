@@ -13,8 +13,9 @@ enum TYPE {FLAG, BOMB, NONE}
 func _ready() -> void:
 	# appeler randomize garantit un résultat pseudo aléatoire
 	randomize()
-	bomb_count=0
 	generate_matrice()
+
+
 	
 func generate_matrice() -> void:
 	bomb_count_lbl.text = str(total_bombs)

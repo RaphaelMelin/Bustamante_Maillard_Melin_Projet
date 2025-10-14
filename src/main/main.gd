@@ -1,5 +1,7 @@
 extends Control
 
+var timer
+@onready var grid: GridContainer = $VBoxContainer/Grid
 var fullscreen : bool = false
 
 func _ready() -> void:
@@ -9,7 +11,8 @@ func _ready() -> void:
 	var data : Dictionary = DataManager.load_data("user://player_data.save")
 	print(data)
 	
-	
+func _on_reset_btn_button_up() -> void:
+	grid.generate_matrice()
 	
 	
 	
