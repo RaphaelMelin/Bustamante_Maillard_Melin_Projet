@@ -10,12 +10,6 @@ func _ready() -> void:
 	# Test data
 	var data : Dictionary = DataManager.load_data("user://player_data.save")
 	print(data)
-	
-func _on_reset_btn_button_up() -> void:
-	grid.generate_matrice()
-	
-	
-	
 
 func _input(_event : InputEvent) -> void:
 	# Pour mettre en plein écran

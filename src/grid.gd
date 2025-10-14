@@ -11,13 +11,18 @@ var neighbors_directions : Array[Vector2i ] = [
 enum TYPE {FLAG, BOMB, NONE}
 @export var bomb_count_lbl : Label
 func _ready() -> void:
-	# appeler randomize garantit un résultat pseudo aléatoire
 	randomize()
-	generate_matrice()
+	# appeler randomize garantit un résultat pseudo aléatoire
+	reset()
 
 
-	
+
 func generate_matrice() -> void:
+	for child in get_children():
+		remove_child(child)
+		child.queue_free()
+	matrice.clear()
+	bomb_count=0
 	bomb_count_lbl.text = str(total_bombs)
 	# Initialiser la matrice
 	var unasigned_tiles : Array = []
@@ -106,3 +111,11 @@ func right_click_on() -> void:
 func right_click_off() -> void:
 	bomb_count=bomb_count+1
 	bomb_count_lbl.text = str(bomb_count)
+	
+	
+func reset()-> void:
+	generate_matrice()
+
+
+func _on_reset_btn_pressed() -> void:
+	reset() # Replace with function body.
