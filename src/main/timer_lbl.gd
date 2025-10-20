@@ -17,3 +17,5 @@ func on_game_ended() -> void:
 func set_is_game_ended(value : bool) -> void:
 	print("test")
 	is_game_ended = value
+	if value==false:
+		timer=0.0
