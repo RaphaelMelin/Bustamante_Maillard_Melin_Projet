@@ -72,7 +72,6 @@ layout_mode = 2
 
 [node name="Grid" parent="PanelContainer/VBoxContainer/HBoxContainer" node_paths=PackedStringArray("bomb_count_lbl", "timer_lbl") instance=ExtResource("4_jkpqq")]
 layout_mode = 2
-columns = 2
 bomb_count_lbl = NodePath("../../VBoxContainer/PanelContainer/Header/BombNbrLbl")
 timer_lbl = NodePath("../../VBoxContainer/PanelContainer/Header/TimerLbl")
 

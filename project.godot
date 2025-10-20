@@ -15,10 +15,6 @@ run/main_scene="uid://vlwhnsruiek0"
 config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 
-[autoload]
-
-UnitaryTests="*res://src/scripts/unitary_tests.gd"
-
 [display]
 
 window/size/viewport_width=720
