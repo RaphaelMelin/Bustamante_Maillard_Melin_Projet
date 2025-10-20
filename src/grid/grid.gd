@@ -14,14 +14,10 @@ var neighbors_directions : Array[Vector2i ] = [
 	Vector2i(1, 1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1)
 ]
 
-
-
-func test_riri():
-	print("riri")
-
 func _ready() -> void:
-	timer_lbl.connect("game_ended", self.on_game_ended)
-	generate_matrice()
+	if not Engine.is_editor_hint():
+		timer_lbl.connect("game_ended", self.on_game_ended)
+		generate_matrice()
 
 
 func instantiate_tile(x : int, y : int) -> Tile:
@@ -36,7 +32,8 @@ func instantiate_tile(x : int, y : int) -> Tile:
 	tile.set_grid_coords(Vector2i(x, y))
 	
 	# Ajouter la case à la scène
-	add_child(tile)
+	if !Engine.is_editor_hint():
+		add_child(tile)
 	return tile	
 
 
@@ -44,6 +41,7 @@ func generate_matrice() -> void:
 	# Réinitialiser les valeurs et la matrice
 	for child in get_children():
 		child.queue_free()
+		
 	matrice.clear()
 	set_bomb_count(0)
 	tile_cpt = columns*columns
