@@ -29,6 +29,7 @@ func instantiate_tile(x : int, y : int) -> Tile:
 	tile.connect("right_click_on", self.right_click_on)
 	tile.connect("right_click_off", self.right_click_off)
 	tile.connect("game_started", self.on_game_started)
+	tile.connect("is_game_won", self.game_won)
 	tile.set_grid_coords(Vector2i(x, y))
 	
 	# Ajouter la case à la scène
@@ -120,6 +121,7 @@ func left_click_tile_bomb() -> void:
 			if tile.value == -1 and tile.type != Tile.TYPE.FLAG:
 				tile.set_type(Tile.TYPE.UNVEILED)
 				tile.refresh_icon()
+				on_game_ended()
 	
 	
 func set_bomb_count(value) -> void:
@@ -133,19 +135,16 @@ func right_click_on() -> void:
 	
 func right_click_off() -> void:
 	set_bomb_count(bomb_count + 1)
-		
 	
 func _on_reset_btn_pressed() -> void:
 	generate_matrice()
-	
-func win() -> void:
-	on_game_ended()
-	
-func lose() -> void:
-	on_game_ended()
-	
-func on_game_ended() -> void:
-	emit_signal("game_ended")
-	
+
+func game_won() -> void:
+	if tile_cpt == total_bombs:
+		on_game_ended()
+
 func on_game_started() -> void:
 	timer_lbl.set_is_game_ended(false)
+	
+func on_game_ended() -> void:
+	timer_lbl.set_is_game_ended(true)
