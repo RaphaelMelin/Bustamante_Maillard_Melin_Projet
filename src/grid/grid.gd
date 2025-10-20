@@ -3,10 +3,12 @@ extends GridContainer
 
 enum TYPE {FLAG, BOMB, NONE}
 @export var bomb_count_lbl : Label
+@export var timer_lbl : Label
 var matrice : Array = []
 var tile_path : PackedScene = preload("res://src/tile/tile.tscn")
 var bomb_count : int
 var total_bombs : int = 10
+var tile_cpt : int
 var neighbors_directions : Array[Vector2i ] = [
 	Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1),
 	Vector2i(1, 1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1)
@@ -18,6 +20,7 @@ func test_riri():
 	print("riri")
 
 func _ready() -> void:
+	timer_lbl.connect("game_ended", self.on_game_ended)
 	generate_matrice()
 
 
@@ -29,6 +32,7 @@ func instantiate_tile(x : int, y : int) -> Tile:
 	tile.connect("left_click_tile_bomb", self.left_click_tile_bomb)
 	tile.connect("right_click_on", self.right_click_on)
 	tile.connect("right_click_off", self.right_click_off)
+	tile.connect("game_started", self.on_game_started)
 	tile.set_grid_coords(Vector2i(x, y))
 	
 	# Ajouter la case à la scène
@@ -42,7 +46,7 @@ func generate_matrice() -> void:
 		child.queue_free()
 	matrice.clear()
 	set_bomb_count(0)
-	
+	tile_cpt = columns*columns
 	# Initialiser la matrice
 	var unasigned_tiles : Array = []
 	for x : int in range(columns):
@@ -96,6 +100,8 @@ func get_tile(grid_coords: Vector2i) -> Tile:
 	
 func unveil_tiles_recursive(tile : Tile) -> void:
 	var neighbor_tiles : Array = get_neighbor_tiles(tile.get_grid_coords())
+	tile_cpt -= 1
+	print(tile_cpt)
 	tile.set_type(Tile.TYPE.UNVEILED)
 	tile.refresh_icon()
 	if tile.value != 0:
@@ -133,3 +139,15 @@ func right_click_off() -> void:
 	
 func _on_reset_btn_pressed() -> void:
 	generate_matrice()
+	
+func win() -> void:
+	on_game_ended()
+	
+func lose() -> void:
+	on_game_ended()
+	
+func on_game_ended() -> void:
+	emit_signal("game_ended")
+	
+func on_game_started() -> void:
+	timer_lbl.set_is_game_ended(false)
