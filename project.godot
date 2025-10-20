@@ -26,6 +26,14 @@ window/size/viewport_height=480
 window/size/mode=2
 window/stretch/mode="canvas_items"
 
+[dotnet]
+
+project/assembly_name="Bustamante_Maillard_Melin_Projet"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")
+
 [input]
 
 f11={

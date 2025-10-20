@@ -1,3 +1,4 @@
+class_name Grid
 extends GridContainer
 
 enum TYPE {FLAG, BOMB, NONE}
@@ -10,6 +11,11 @@ var neighbors_directions : Array[Vector2i ] = [
 	Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1),
 	Vector2i(1, 1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1)
 ]
+
+
+
+func test_riri():
+	print("riri")
 
 func _ready() -> void:
 	generate_matrice()

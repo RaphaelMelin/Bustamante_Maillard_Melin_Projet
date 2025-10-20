@@ -2,7 +2,6 @@ class_name Tile
 
 extends Button
 	
-signal left_click
 signal right_click_on
 signal right_click_off
 signal unveil_tiles_recursive
@@ -21,13 +20,14 @@ func _ready():
 	connect("gui_input", _on_Button_gui_input)
 
 
+# Méthode integrée de Godot appelée quand la souris survole la case
 func _on_Button_gui_input(event):
 	if event is InputEventMouseButton and event.pressed:
 		match event.button_index:
 			MOUSE_BUTTON_LEFT:
 				print("clic gauche")
-				emit_signal("left_click")
-				if type==TYPE.NONE:
+				if type == TYPE.NONE:
+					
 					refresh_icon()
 					if value==0:
 						emit_signal("unveil_tiles_recursive", self)
