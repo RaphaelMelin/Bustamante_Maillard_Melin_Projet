@@ -11,3 +11,6 @@ export_credentials.cfg
 
 # Imported translations (automatically generated from CSV files)
 *.translation
+
+# Export avec .NET
+/export/data_Bustamante_Maillard_Melin_Projet_windows_x86_64/

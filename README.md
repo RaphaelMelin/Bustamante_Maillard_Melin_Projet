@@ -10,7 +10,7 @@
 - Mélin Raphaël
 
 ## Technologies utilisées
-- Godot Engine 4.4.1 Stable
+- Godot Engine 4.4.1 Stable (version .NET pour exporter)
 - GdUnit 4 (tests unitaires)
 - Gdscript
 - Discord

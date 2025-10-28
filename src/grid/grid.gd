@@ -8,7 +8,7 @@ enum TYPE {FLAG, BOMB, NONE}
 var matrice : Array = []
 var tile_path : PackedScene = preload("res://src/tile/tile.tscn")
 var bomb_count : int
-var total_bombs : int = 2
+var total_bombs : int = 10
 var veiled_tile_cpt : int
 var game_started: bool = false
 var neighbors_directions : Array[Vector2i ] = [
