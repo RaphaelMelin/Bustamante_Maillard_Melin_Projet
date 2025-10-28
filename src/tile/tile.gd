@@ -5,10 +5,9 @@ extends Button
 signal right_click_on
 signal right_click_off
 signal unveil_tiles_recursive
-signal left_click_tile_bomb
-signal game_ended
+signal left_click_on_bomb
 signal game_started
-signal is_game_won
+signal tile_clicked
 
 enum TYPE {FLAG, BOMB, NONE, UNVEILED}
 var type : TYPE = TYPE.NONE
@@ -16,52 +15,71 @@ var type : TYPE = TYPE.NONE
 var value : int = 0
 var nearby_bombs_count = 0
 var grid_coords : Vector2i
+var disable_clics: bool = false
 
-# Méthodes privées
-
-func _ready():
-	connect("gui_input", _on_Button_gui_input)
-
-
+# --- Méthodes privées ---------------------------------------------------------------------------
 # Méthode integrée de Godot appelée quand la souris survole la case
-func _on_Button_gui_input(event):
+# Gère les clics gauche et droit :
+# - Clic gauche : dévoile la case (et ses voisines si nécessaire).
+# - Clic droit : place ou retire un drapeau, si la case n'est pas déjà dévoilée.
+func _gui_input(event):
+	if disable_clics: return
+	
 	if event is InputEventMouseButton and event.pressed:
 		match event.button_index:
 			MOUSE_BUTTON_LEFT:
-				print("clic gauche")
-				if type==TYPE.NONE:
+				if type == TYPE.NONE:
 					emit_signal("game_started")
 					refresh_icon()
-					if value==-1:
-						emit_signal("left_click_tile_bomb")
+					if value == -1:
+						emit_signal("left_click_on_bomb")
 					else:
 						emit_signal("unveil_tiles_recursive", self)
-				emit_signal("is_game_won")
+				emit_signal("tile_clicked")
+			
 			MOUSE_BUTTON_RIGHT:
-				print("clic droit")
-				if type!=TYPE.UNVEILED:
+				if type != TYPE.UNVEILED:
 					put_flag()
 
 
-# Méthodes publiques
+# --- Méthodes getter et setter ------------------------------------------------------------------------------------
 
+# Type ---------------------
 func get_type() -> TYPE:
 	return type
-
 
 func set_type(type_):
 	type = type_
 	refresh_front_icon()
 
 	
+# Value ---------------------
 func get_value() -> int:
 	return value	
-
 
 func set_value(value_ : int) -> void:
 	value = value_	
 	
 	
+# Grid Coords ---------------------
+func get_grid_coords() -> Vector2i:
+	return grid_coords
+
+func set_grid_coords(grid_coords_ : Vector2i) -> void:
+	grid_coords = grid_coords_
+
+
+# Increment ---------------------
+func increment_nearby_bombs_count() -> void:
+	nearby_bombs_count += 1
+	
+func increment_value() -> void:
+	# Si la case est une bombe, on ne fait rien
+	if value == -1: return
+	value += 1
+
+
+# --- Refresh l'icon de la tile -------------------------------------
 func refresh_icon() -> void:
 	var icon_name : String
 	match value:
@@ -79,36 +97,9 @@ func refresh_icon() -> void:
 	icon = load("res://assets/sprites/" + icon_name + ".png")
 
 
-func get_grid_coords() -> Vector2i:
-	return grid_coords
-
-
-func set_grid_coords(grid_coords_ : Vector2i) -> void:
-	grid_coords = grid_coords_
-
-
-func increment_nearby_bombs_count() -> void:
-	nearby_bombs_count += 1
-	
-func increment_value() -> void:
-	# Si la case est une bombre, on ne fait rien
-	if value == -1: return
-	value += 1
-
-
-func put_flag() -> void :
-	if type==TYPE.NONE:
-		set_type(TYPE.FLAG)
-		emit_signal("right_click_on")
-	elif type==TYPE.FLAG:
-		set_type(TYPE.NONE)
-		emit_signal("right_click_off")
-
-
 func refresh_front_icon() -> void:
-	# Une tile retourné n'a pas de texture avant
-	if type == TYPE.UNVEILED:
-		return
+	# Une tile retourné n'a pas de texture à rafraichir
+	if type == TYPE.UNVEILED: return
 	
 	var icon_name : String
 	match type:
@@ -116,3 +107,15 @@ func refresh_front_icon() -> void:
 		TYPE.NONE : icon_name = "tile"
 	
 	icon = load("res://assets/sprites/" + icon_name + ".png")
+
+
+# Méthode appelée lors d’un clic droit.
+# Si la case est vide, un drapeau est posé.
+# Si un drapeau est déjà présent, il est retiré.
+func put_flag() -> void :
+	if type==TYPE.NONE:
+		set_type(TYPE.FLAG)
+		emit_signal("right_click_on")
+	elif type==TYPE.FLAG:
+		set_type(TYPE.NONE)
+		emit_signal("right_click_off")

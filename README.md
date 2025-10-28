@@ -4,13 +4,14 @@
 # Projet de Développement de Jeux 
 ## Langage de programmation au choix
 
-##Equipe
+## Equipe
 - Bustamante Thomas
 - Maillard Paul
 - Mélin Raphaël
 
 ## Technologies utilisées
-- Godot Engine
+- Godot Engine 4.4.1 Stable
+- GdUnit 4 (tests unitaires)
 - Gdscript
 - Discord
 - Google Doc

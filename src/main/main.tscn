@@ -1,10 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://vlwhnsruiek0"]
+[gd_scene load_steps=7 format=3 uid="uid://vlwhnsruiek0"]
 
 [ext_resource type="Script" uid="uid://eyha5enj747h" path="res://src/main/main.gd" id="1_eewff"]
-[ext_resource type="Script" uid="uid://bkeso82xu2gf5" path="res://src/main/timer_lbl.gd" id="3_djufw"]
+[ext_resource type="Script" uid="uid://bkeso82xu2gf5" path="res://src/scripts/timer_lbl.gd" id="3_djufw"]
 [ext_resource type="PackedScene" uid="uid://dejo10054ka5j" path="res://src/background/background.tscn" id="4_djufw"]
 [ext_resource type="PackedScene" uid="uid://oc3h2ymwk5s4" path="res://src/grid/grid.tscn" id="4_jkpqq"]
-[ext_resource type="PackedScene" uid="uid://6uiawk8axfm3" path="res://src/tile/tile.tscn" id="5_jqarl"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ab7mr"]
 border_width_left = 15
@@ -60,7 +59,7 @@ text = "10"
 [node name="TimerLbl" type="Label" parent="PanelContainer/VBoxContainer/VBoxContainer/PanelContainer/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "0:00"
+text = "00:00"
 script = ExtResource("3_djufw")
 
 [node name="ResetBtn" type="Button" parent="PanelContainer/VBoxContainer/VBoxContainer/PanelContainer/Header"]
@@ -70,12 +69,14 @@ text = "Réinitialiser"
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Grid" parent="PanelContainer/VBoxContainer/HBoxContainer" node_paths=PackedStringArray("bomb_count_lbl", "timer_lbl") instance=ExtResource("4_jkpqq")]
+[node name="Grid" parent="PanelContainer/VBoxContainer/HBoxContainer" node_paths=PackedStringArray("bomb_count_lbl", "timer_lbl", "game_ended_lbl") instance=ExtResource("4_jkpqq")]
 layout_mode = 2
 bomb_count_lbl = NodePath("../../VBoxContainer/PanelContainer/Header/BombNbrLbl")
 timer_lbl = NodePath("../../VBoxContainer/PanelContainer/Header/TimerLbl")
+game_ended_lbl = NodePath("../GameEndedLbl")
 
-[node name="Button" parent="PanelContainer/VBoxContainer/HBoxContainer/Grid" instance=ExtResource("5_jqarl")]
+[node name="GameEndedLbl" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+horizontal_alignment = 1
 
 [connection signal="pressed" from="PanelContainer/VBoxContainer/VBoxContainer/PanelContainer/Header/ResetBtn" to="PanelContainer/VBoxContainer/HBoxContainer/Grid" method="_on_reset_btn_pressed"]

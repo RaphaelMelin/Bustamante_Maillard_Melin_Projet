@@ -9,28 +9,32 @@ var grid: Grid
 func before_test():
 	grid = auto_free(preload("res://src/grid/grid.tscn").instantiate())
 	add_child(grid)	
-	if grid.bomb_count_lbl == null:
-		grid.bomb_count_lbl = auto_free(Label.new())
-
+	
+	# Créer les timers manuellement car il n'existe sans la scène main.tscn
+	grid.bomb_count_lbl = auto_free(Label.new())
+	grid.timer_lbl = auto_free(TimerLbl.new())
+	grid.game_ended_lbl = auto_free(Label.new())
+	
+	
  
 # ===== TESTS D'INITIALISATION =====
 
 func test_matrice_initialization():
 	# Tester que la matrice se génère correctement
-	grid.generate_matrice()
+	grid._generate_matrice()
 	assert_int(grid.matrice.size()).is_equal(grid.columns)
 	assert_int(grid.matrice[0].size()).is_equal(grid.columns)
 	
 
 func test_bomb_count_initialization():
 	# Vérifier que le compteur de bombes s'initialise correctement
-	grid.generate_matrice()	
+	grid._generate_matrice()	
 	assert_int(grid.bomb_count).is_equal(grid.total_bombs)
 
 
 func test_total_bombs_count():
 	# Vérifier que le nombre total de bombes est correct
-	grid.generate_matrice()
+	grid._generate_matrice()
 	
 	var bombs_found = 0
 	for x in range(grid.columns):
@@ -45,7 +49,7 @@ func test_total_bombs_count():
 
 func test_get_tile_valid_coords():
 	# Tester la récupération d'une tile avec des coordonnées valides
-	grid.generate_matrice()
+	grid._generate_matrice()
 	
 	var tile = grid.get_tile(Vector2i(0, 0))
 	assert_object(tile).is_not_null()
@@ -53,7 +57,7 @@ func test_get_tile_valid_coords():
 
 func test_get_tile_invalid_negative_coords():
 	# Tester avec des coordonnées négatives
-	grid.generate_matrice()
+	grid._generate_matrice()
 	
 	var tile = grid.get_tile(Vector2i(-1, 0))
 	assert_object(tile).is_null()
@@ -61,7 +65,7 @@ func test_get_tile_invalid_negative_coords():
 
 func test_get_tile_invalid_out_of_bounds():
 	# Tester avec des coordonnées hors limites
-	grid.generate_matrice()
+	grid._generate_matrice()
 	
 	var tile = grid.get_tile(Vector2i(grid.columns, grid.columns))
 	assert_object(tile).is_null()
@@ -70,7 +74,7 @@ func test_get_tile_invalid_out_of_bounds():
 
 func test_get_neighbor_tiles_corner():
 	# Tester les voisins d'une case dans un coin (devrait avoir 3 voisins)
-	grid.generate_matrice()
+	grid._generate_matrice()
 	
 	var neighbors = grid.get_neighbor_tiles(Vector2i(0, 0))
 	assert_int(neighbors.size()).is_equal(3)
@@ -78,7 +82,7 @@ func test_get_neighbor_tiles_corner():
 
 func test_get_neighbor_tiles_edge():
 	# Tester les voisins d'une case sur un bord (devrait avoir 5 voisins)
-	grid.generate_matrice()
+	grid._generate_matrice()
 	
 	var neighbors = grid.get_neighbor_tiles(Vector2i(0, 1))
 	assert_int(neighbors.size()).is_equal(5)
@@ -86,7 +90,7 @@ func test_get_neighbor_tiles_edge():
 
 func test_get_neighbor_tiles_center():
 	# Tester les voisins d'une case au centre (devrait avoir 8 voisins)
-	grid.generate_matrice()
+	grid._generate_matrice()
 	
 	var center = Vector2i(grid.columns / 2, grid.columns / 2)
 	var neighbors = grid.get_neighbor_tiles(center)
@@ -95,7 +99,7 @@ func test_get_neighbor_tiles_center():
 
 func test_get_neighbor_tiles_all_valid():
 	# Vérifier que tous les voisins retournés sont valides
-	grid.generate_matrice()
+	grid._generate_matrice()
 	
 	var neighbors = grid.get_neighbor_tiles(Vector2i(1, 1))
 	
@@ -103,24 +107,24 @@ func test_get_neighbor_tiles_all_valid():
 		assert_object(neighbor).is_not_null()
 		assert_bool(neighbor is Tile).is_true()
 
-# ===== TESTS SET_BOMB_COUNT =====
+# ===== TESTS _SET_BOMB_COUNT =====
 
 func test_set_bomb_count_updates_value():
-	# Vérifier que set_bomb_count met à jour la valeur
-	grid.set_bomb_count(5)	
+	# Vérifier que _set_bomb_count met à jour la valeur
+	grid._set_bomb_count(5)	
 	assert_int(grid.bomb_count).is_equal(5)
 
 
 func test_set_bomb_count_updates_label():
 	# Vérifier que le label est mis à jour
-	grid.set_bomb_count(7)
+	grid._set_bomb_count(7)
 	
 	assert_str(grid.bomb_count_lbl.text).is_equal("7")
 
 
 func test_set_bomb_count_zero():
 	# Tester avec la valeur 0
-	grid.set_bomb_count(0)
+	grid._set_bomb_count(0)
 	
 	assert_int(grid.bomb_count).is_equal(0)
 	assert_str(grid.bomb_count_lbl.text).is_equal("0")
@@ -128,7 +132,7 @@ func test_set_bomb_count_zero():
 
 func test_set_bomb_count_negative():
 	# Tester avec une valeur négative
-	grid.set_bomb_count(-3)
+	grid._set_bomb_count(-3)
 	
 	assert_int(grid.bomb_count).is_equal(-3)
 	assert_str(grid.bomb_count_lbl.text).is_equal("-3")
@@ -137,21 +141,21 @@ func test_set_bomb_count_negative():
 
 func test_right_click_on_decrements():
 	# Vérifier que right_click_on décrémente le compteur
-	grid.set_bomb_count(10)
+	grid._set_bomb_count(10)
 	grid.right_click_on()	
 	assert_int(grid.bomb_count).is_equal(9)
 
 
 func test_right_click_off_increments():
 	# Vérifier que right_click_off incrémente le compteur
-	grid.set_bomb_count(10)
+	grid._set_bomb_count(10)
 	grid.right_click_off()
 	assert_int(grid.bomb_count).is_equal(11)
 
 
 func test_right_click_on_multiple():
 	# Tester plusieurs décrements successifs
-	grid.set_bomb_count(10)
+	grid._set_bomb_count(10)
 	grid.right_click_on()
 	grid.right_click_on()
 	grid.right_click_on()
@@ -175,40 +179,40 @@ func test_instantiate_tile_sets_coords():
 func test_instantiate_tile_adds_to_scene():
 	# Vérifier que la tile est ajoutée comme enfant
 	var initial_children = grid.get_child_count()
-	var tile = grid.instantiate_tile(0, 0)
+	grid.instantiate_tile(0, 0)
 	assert_int(grid.get_child_count()).is_equal(initial_children + 1)
 
 # ===== TESTS GENERATE_MATRICE =====
 
 func test_generate_matrice_clears_previous():
 	# Vérifier que generate_matrice nettoie la matrice précédente
-	grid.generate_matrice()
+	grid._generate_matrice()
 	var first_tile = grid.get_tile(Vector2i(0, 0))
 	
-	grid.generate_matrice()
+	grid._generate_matrice()
 	var second_tile = grid.get_tile(Vector2i(0, 0))	
 	assert_bool(first_tile != second_tile).is_true()
 
 
 func test_generate_matrice_resets_bomb_count():
 	# Vérifier que le compteur de bombes est réinitialisé
-	grid.set_bomb_count(5)
-	grid.generate_matrice()
+	grid._set_bomb_count(5)
+	grid._generate_matrice()
 	assert_int(grid.bomb_count).is_equal(grid.total_bombs)
 
 
 func test_generate_matrice_creates_square_grid():
 	# Vérifier que la grille créée est carrée
-	grid.generate_matrice()
+	grid._generate_matrice()
 	for line in grid.matrice:
 		assert_int(line.size()).is_equal(grid.columns)
 
-# ===== TESTS LEFT_CLICK_TILE_BOMB =====
+# ===== TESTS LEFT_ON_TILE_BOMB =====
 
-func test_left_click_tile_bomb_unveils_bombs():
+func test_left_click_on_bomb_unveils_bombs():
 	# Vérifier que toutes les bombes non marquées sont dévoilées
-	grid.generate_matrice()
-	grid.left_click_tile_bomb()
+	grid._generate_matrice()
+	grid.left_click_on_bomb()
 	
 	for x in range(grid.columns):
 		for y in range(grid.columns):
@@ -220,16 +224,16 @@ func test_left_click_tile_bomb_unveils_bombs():
 
 func test_unveil_tiles_recursive_changes_type():
 	# Vérifier que la tile est dévoilée
-	grid.generate_matrice()
+	grid._generate_matrice()
 	var tile = grid.get_tile(Vector2i(0, 0))
-	
+
 	grid.unveil_tiles_recursive(tile)	
 	assert_int(tile.type).is_equal(Tile.TYPE.UNVEILED)
 
 
 func test_unveil_tiles_recursive_stops_at_numbered():
 	# Vérifier que la récursion s'arrête sur une case numérotée
-	grid.generate_matrice()
+	grid._generate_matrice()
 	
 	# Trouver une tile avec une valeur > 0
 	var numbered_tile = null
@@ -250,7 +254,7 @@ func test_unveil_tiles_recursive_stops_at_numbered():
 
 func test_full_game_generation_integrity():
 	# Test d'intégrité complet de la génération
-	grid.generate_matrice()
+	grid._generate_matrice()
 	
 	var total_tiles = grid.columns * grid.columns
 	var tiles_count = 0
@@ -271,7 +275,7 @@ func test_full_game_generation_integrity():
 
 func test_neighbor_bomb_count_accuracy():
 	# Vérifier que le comptage des bombes voisines est correct
-	grid.generate_matrice()
+	grid._generate_matrice()
 	
 	for x in range(grid.columns):
 		for y in range(grid.columns):

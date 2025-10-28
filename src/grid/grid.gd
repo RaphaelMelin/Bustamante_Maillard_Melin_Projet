@@ -4,48 +4,44 @@ extends GridContainer
 enum TYPE {FLAG, BOMB, NONE}
 @export var bomb_count_lbl : Label
 @export var timer_lbl : Label
+@export var game_ended_lbl: Label
 var matrice : Array = []
 var tile_path : PackedScene = preload("res://src/tile/tile.tscn")
 var bomb_count : int
-var total_bombs : int = 1
-var tile_cpt : int
+var total_bombs : int = 2
+var veiled_tile_cpt : int
+var game_started: bool = false
 var neighbors_directions : Array[Vector2i ] = [
 	Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1),
 	Vector2i(1, 1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1)
 ]
 
+# Fonction Built in de Godot appelée lorsque le noeud est ajouté à la scène
+# (au démarage de l'application)
 func _ready() -> void:
-	if not Engine.is_editor_hint():
-		timer_lbl.connect("game_ended", self.on_game_ended)
-		generate_matrice()
+	# Générer la matrice lorsqu'on lance le jeu
+	_generate_matrice()
+
+# Méthode appelée lorsqu'on clique sur le bouton réinitialiser
+# Réinitialise la matrice
+func _on_reset_btn_pressed() -> void:
+	_generate_matrice()
 
 
-func instantiate_tile(x : int, y : int) -> Tile:
-	var tile : Button = tile_path.instantiate()
-	
-	# Connecter la tile à différent signaux
-	tile.connect("unveil_tiles_recursive", self.unveil_tiles_recursive)
-	tile.connect("left_click_tile_bomb", self.left_click_tile_bomb)
-	tile.connect("right_click_on", self.right_click_on)
-	tile.connect("right_click_off", self.right_click_off)
-	tile.connect("game_started", self.on_game_started)
-	tile.connect("is_game_won", self.game_won)
-	tile.set_grid_coords(Vector2i(x, y))
-	
-	# Ajouter la case à la scène
-	if !Engine.is_editor_hint():
-		add_child(tile)
-	return tile	
-
-
-func generate_matrice() -> void:
-	# Réinitialiser les valeurs et la matrice
-	for child in get_children():
+# Génère une nouvelle matrice, peut être appelé pour écraser l'ancienne matrice lorsqu'on recommence une partie 
+func _generate_matrice() -> void:
+	# Libérer les enfants (les tiles)
+	for child : Tile in get_children():
 		child.queue_free()
 		
+	# Réinitialiser les valeurs et la matrice
+	game_started = false
 	matrice.clear()
-	set_bomb_count(0)
-	tile_cpt = columns*columns
+	_set_bomb_count(0)
+	veiled_tile_cpt = columns * columns
+	game_ended_lbl.text = ""
+	timer_lbl.text = "00:00"
+
 	# Initialiser la matrice
 	var unasigned_tiles : Array = []
 	for x : int in range(columns):
@@ -66,7 +62,7 @@ func generate_matrice() -> void:
 		if bomb_count < total_bombs:
 			# Assigner le type BOMB à la case
 			tile.set_value(-1)
-			set_bomb_count(bomb_count + 1)
+			_set_bomb_count(bomb_count + 1)
 			
 			var grid_coords = tile.get_grid_coords()
 			for neighbor_tile : Tile in get_neighbor_tiles(grid_coords):
@@ -76,6 +72,33 @@ func generate_matrice() -> void:
 			tile.refresh_front_icon()
 			break
 	
+	
+# Instantie une tile (case) et l'ajoute à la scène
+func instantiate_tile(x : int, y : int) -> Tile:
+	# Nouvelle instance de tile
+	var tile : Button = tile_path.instantiate()
+	
+	# Connecter la tile à différent signaux
+	tile.connect("unveil_tiles_recursive", self.unveil_tiles_recursive)
+	tile.connect("left_click_on_bomb", self.left_click_on_bomb)
+	tile.connect("right_click_on", self.right_click_on)
+	tile.connect("right_click_off", self.right_click_off)
+	tile.connect("game_started", self.on_game_started)
+	tile.connect("tile_clicked", self.tile_clicked)
+	
+	# On définit les coordonnées de la tile
+	tile.set_grid_coords(Vector2i(x, y))
+	
+	# Ajouter la case à la scène
+	add_child(tile)
+	return tile	
+		
+# --- Fonctions utilitaires --------------------------------------------------------------------------------
+
+func _set_bomb_count(value) -> void:
+	bomb_count = value
+	bomb_count_lbl.text = str(bomb_count)	
+
 	
 func get_neighbor_tiles(grid_coords : Vector2i) -> Array:
 	# Renvoie la liste de tout les voisins d'une tile
@@ -96,11 +119,12 @@ func get_tile(grid_coords: Vector2i) -> Tile:
 		return null
 	return matrice[grid_coords.x][grid_coords.y]
 	
-	
+
+# Méthode appelée lorsque l'on révèle une case vide
+# Révèle les cases vides et leurs voisins de manière récursive
 func unveil_tiles_recursive(tile : Tile) -> void:
 	var neighbor_tiles : Array = get_neighbor_tiles(tile.get_grid_coords())
-	tile_cpt -= 1
-	print(tile_cpt)
+	veiled_tile_cpt -= 1
 	tile.set_type(Tile.TYPE.UNVEILED)
 	tile.refresh_icon()
 	if tile.value != 0:
@@ -111,9 +135,11 @@ func unveil_tiles_recursive(tile : Tile) -> void:
 		if neighbor.type != Tile.TYPE.UNVEILED:
 			unveil_tiles_recursive(neighbor)
 	
-	
-	
-func left_click_tile_bomb() -> void:
+
+# Méthode appelée lorsqu'on clique sur une bombe
+# Révèle les bombes qui ne sont pas marquées par un drapeau et met fin à la partie
+func left_click_on_bomb() -> void:
+	game_ended_lbl.text = "Défaite ):"
 	for x : int in range(columns):
 		for y : int in range(columns):
 			var coords_tile : Vector2i = Vector2i(x, y)
@@ -123,28 +149,36 @@ func left_click_tile_bomb() -> void:
 				tile.refresh_icon()
 				on_game_ended()
 	
-	
-func set_bomb_count(value) -> void:
-	bomb_count = value
-	bomb_count_lbl.text = str(bomb_count)	
-
-	
+# Méthode appelée lors d'un clic droit sur une tile	non retournée
+# Augmente le compteur de bombes de 1
 func right_click_on() -> void:
-	set_bomb_count(bomb_count - 1)
+	_set_bomb_count(bomb_count - 1)
 	
-	
+# Méthode appelée lors d'un clic droit sur une tile	non retournée et avec un drapeau
+# Réduit le compteur de bombes de 1
 func right_click_off() -> void:
-	set_bomb_count(bomb_count + 1)
+	_set_bomb_count(bomb_count + 1)
 	
-func _on_reset_btn_pressed() -> void:
-	generate_matrice()
-
-func game_won() -> void:
-	if tile_cpt == total_bombs:
+# Méthode appelé à chaque clic sur une tile
+# Mets fin à la partie si toutes les cases ont été retourné sauf les bombes
+func tile_clicked() -> void:
+	# on vérifie si la partie est terminée
+	if veiled_tile_cpt == total_bombs:
 		on_game_ended()
+		game_ended_lbl.text = "Victoire :)"
+		
 
+# Méthode appelée lorsque l'on clique sur une tile pour la première fois de la partie
+# Démarre le timer
 func on_game_started() -> void:
+	if game_started: return
+	game_started = true
 	timer_lbl.set_is_game_ended(false)
 	
+# Méthode appelée lorsque l'on perds ou gagne la partie
+# Mets fin au timer et empêche de continuer à jouer
 func on_game_ended() -> void:
 	timer_lbl.set_is_game_ended(true)
+	for tile : Tile in get_children():
+		tile.disable_clics = true
+		tile.disabled = true # pour l'apparence
