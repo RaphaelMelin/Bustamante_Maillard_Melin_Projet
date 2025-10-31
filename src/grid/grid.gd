@@ -1,23 +1,52 @@
+# src/grid/grid.gd
+# ========================================
+# Gestion de la grille et des interactions grille-cases
+# Gère :
+# - Génération de la grille
+# - Placement aléatoire des bombes
+# - Dévoilement récursif
+# - Victoire / Défaite
+# - Compteur de bombes restantes
+# ========================================
+
 class_name Grid
 extends GridContainer
 
-enum TYPE {FLAG, BOMB, NONE}
-@export var bomb_count_lbl : Label
-@export var timer_lbl : Label
-@export var game_ended_lbl: Label
-var matrice : Array = []
-var tile_path : PackedScene = preload("res://src/tile/tile.tscn")
-var bomb_count : int
-var total_bombs : int = 10
-var veiled_tile_cpt : int
+# --- Labels utilisés pour l'interface --------------------------------------------------------------------------------
+@export var bomb_count_lbl: Label      # Affiche le nombre de bombes restantes (selon le nombre de drapeaux placés)
+@export var timer_lbl: TimerLbl        # Chronomètre
+@export var game_ended_lbl: Label      # Affiche le texte de fin de partie (victoire ou défaite)
+
+# --- Variables --------------------------------------------------------------------------------
+# Grille en 2 dimensions qui contient les tiles
+var matrice: Array[Array] = []
+
+# Scène de tile à instancier
+var tile_path: PackedScene = preload("res://src/tile/tile.tscn")
+
+# Bombes restantes à "drapeauter"
+var bomb_count: int = 0
+
+# Nombre TOTAL de bombes dans la partie (fixe)
+var total_bombs: int = 10
+
+# Cases encore cachées, victoire quand veiled_tile_cpt == total_bombs (en gros quand il reste autant de bombes que de cases non dévoilées)
+var veiled_tile_cpt: int = 0
+
+# Sert à savoir si la partie a commencé ou non, sert à gérer le timer
 var game_started: bool = false
-var neighbors_directions : Array[Vector2i ] = [
-	Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1),
-	Vector2i(1, 1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1)
+
+# Directions des voisins
+var neighbors_directions: Array[Vector2i] = [
+	Vector2i(1, 0), Vector2i(-1, 0),
+	Vector2i(0, 1), Vector2i(0, -1),
+	Vector2i(1, 1), Vector2i(1, -1),
+	Vector2i(-1, 1), Vector2i(-1, -1)
 ]
 
-# Fonction Built in de Godot appelée lorsque le noeud est ajouté à la scène
-# (au démarage de l'application)
+
+# --- Initialisation --------------------------------------------------------------------------------
+
 func _ready() -> void:
 	# Générer la matrice lorsqu'on lance le jeu
 	_generate_matrice()
@@ -27,6 +56,8 @@ func _ready() -> void:
 func _on_reset_btn_pressed() -> void:
 	_generate_matrice()
 
+
+# --- Génération de la grille --------------------------------------------------------------------------------
 
 # Génère une nouvelle matrice, peut être appelé pour écraser l'ancienne matrice lorsqu'on recommence une partie 
 func _generate_matrice() -> void:
@@ -73,6 +104,8 @@ func _generate_matrice() -> void:
 			break
 	
 	
+# --- Création de tiles --------------------------------------------------------------------------------
+
 # Instantie une tile (case) et l'ajoute à la scène
 func instantiate_tile(x : int, y : int) -> Tile:
 	# Nouvelle instance de tile
@@ -119,6 +152,8 @@ func get_tile(grid_coords: Vector2i) -> Tile:
 		return null
 	return matrice[grid_coords.x][grid_coords.y]
 	
+
+# --- Mécaniques --------------------------------------------------------------------------------
 
 # Méthode appelée lorsque l'on révèle une case vide
 # Révèle les cases vides et leurs voisins de manière récursive

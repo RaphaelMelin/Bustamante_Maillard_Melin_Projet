@@ -118,14 +118,12 @@ func test_set_bomb_count_updates_value():
 func test_set_bomb_count_updates_label():
 	# Vérifier que le label est mis à jour
 	grid._set_bomb_count(7)
-	
 	assert_str(grid.bomb_count_lbl.text).is_equal("7")
 
 
 func test_set_bomb_count_zero():
 	# Tester avec la valeur 0
 	grid._set_bomb_count(0)
-	
 	assert_int(grid.bomb_count).is_equal(0)
 	assert_str(grid.bomb_count_lbl.text).is_equal("0")
 
@@ -133,7 +131,6 @@ func test_set_bomb_count_zero():
 func test_set_bomb_count_negative():
 	# Tester avec une valeur négative
 	grid._set_bomb_count(-3)
-	
 	assert_int(grid.bomb_count).is_equal(-3)
 	assert_str(grid.bomb_count_lbl.text).is_equal("-3")
 
@@ -142,7 +139,7 @@ func test_set_bomb_count_negative():
 func test_right_click_on_decrements():
 	# Vérifier que right_click_on décrémente le compteur
 	grid._set_bomb_count(10)
-	grid.right_click_on()	
+	grid.right_click_on()
 	assert_int(grid.bomb_count).is_equal(9)
 
 

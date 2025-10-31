@@ -1,8 +1,16 @@
+# main.gd
+# ========================================
+# Gestion globale du jeu, surtout la fenêtre
+# Gère uniquement le mode plein écran (F11)
+# ========================================
+
 extends Control
 
+# État du plein écran
+var fullscreen: bool = false
 
-var fullscreen : bool = false
 
+# Gère les entrées clavier
 func _input(_event : InputEvent) -> void:
 	# Pour mettre en plein écran
 	if Input.is_action_just_pressed("f11"):
