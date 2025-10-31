@@ -44,9 +44,6 @@ var type: TYPE = TYPE.NONE
 #  1 à 8 → nombre de bombes adjacentes
 var value: int = 0
 
-# Nombre de bombes à coté (calculé à la génération)
-var nearby_bombs_count: int = 0
-
 # Coordonnées dans la grille (x, y)
 var grid_coords: Vector2i = Vector2i(0, 0)
 
@@ -110,11 +107,7 @@ func get_grid_coords() -> Vector2i:
 func set_grid_coords(coords: Vector2i) -> void:
 	grid_coords = coords
 
-# Sert juste à compter les bombes autour de la case, c'est juste pour la numérotation
-func increment_nearby_bombs_count() -> void:
-	nearby_bombs_count += 1
-
-# Incrémente la valeur (nombre affiché), sauf si c'est une bombe
+# Incrémente la valeur (nombre affiché) par rapport aux nombre de bombes voisines, sauf si c'est une bombe
 func increment_value() -> void:
 	if value == -1:
 		return  # Si la case est une bombe, on ne fait rien
