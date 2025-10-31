@@ -1,26 +1,36 @@
+# src/timer_lbl.gd
+# ========================================
+# TIMERLBL : Affiche un chronomètre MM:SS
+# Démarre au premier clic, s'arrête à la fin de la partie (victoire ou défaite, peu importe)
+# ========================================
+
 class_name TimerLbl
 extends Label
 
+# Temps écoulé en secondes
 var timer: float = 0.0
-var is_game_ended : bool = true
+
+# true = chronomètre actif
+var is_running: bool = false
 
 
-# Méthode built-in de godot appelée 60 fois par secondes
+# Appelé 60 fois par seconde
 func _process(delta: float) -> void:
-	if is_game_ended:
+	if not is_running:
 		return
 	
 	# Incrémente le timer
 	timer += delta
 	
-	# Affiche le timer
+	# Formate (en MM:SS) + Affiche le timer
 	var minutes = int(timer) / 60
 	var seconds = int(timer) % 60
-	text = "%02d:%02d" % [minutes, seconds]  # exemple: 00:59
+	text = "%02d:%02d" % [minutes, seconds]
 
-# Méthode appelée à la fin ou au début d'une partie
+
+# Appelé à la fin ou au début d'une partie
 # Initialise le timer à 0 et le démarre ou l'arrête
-func set_is_game_ended(value : bool) -> void:
-	is_game_ended = value
-	if value == false:
+func set_is_game_ended(is_ended: bool) -> void:
+	is_running = !is_ended
+	if is_running:
 		timer = 0.0
