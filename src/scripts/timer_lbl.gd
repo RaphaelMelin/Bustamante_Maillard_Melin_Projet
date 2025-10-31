@@ -11,12 +11,12 @@ extends Label
 var timer: float = 0.0
 
 # true = chronomètre actif
-var is_running: bool = false
+var is_game_ended : bool = true
 
 
 # Appelé 60 fois par seconde
 func _process(delta: float) -> void:
-	if not is_running:
+	if is_game_ended:
 		return
 	
 	# Incrémente le timer
@@ -30,7 +30,7 @@ func _process(delta: float) -> void:
 
 # Appelé à la fin ou au début d'une partie
 # Initialise le timer à 0 et le démarre ou l'arrête
-func set_is_game_ended(is_ended: bool) -> void:
-	is_running = !is_ended
-	if is_running:
+func set_is_game_ended(value : bool) -> void:
+	is_game_ended = value
+	if value == false:
 		timer = 0.0
