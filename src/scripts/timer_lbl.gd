@@ -1,6 +1,6 @@
 # src/timer_lbl.gd
 # ========================================
-# TIMERLBL : Affiche un chronomètre MM:SS
+# Affiche un chronomètre MM:SS
 # Démarre au premier clic, s'arrête à la fin de la partie (victoire ou défaite, peu importe)
 # ========================================
 
