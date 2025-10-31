@@ -43,6 +43,7 @@ var type: TYPE = TYPE.NONE
 #  0 → case vide (déclenche récursion)
 #  1 à 8 → nombre de bombes adjacentes
 var value: int = 0
+var nearby_bombs_count = 0
 
 # Coordonnées dans la grille (x, y)
 var grid_coords: Vector2i = Vector2i(0, 0)
@@ -106,6 +107,9 @@ func get_grid_coords() -> Vector2i:
 
 func set_grid_coords(coords: Vector2i) -> void:
 	grid_coords = coords
+
+func increment_nearby_bombs_count() -> void:
+	nearby_bombs_count += 1
 
 # Incrémente la valeur (nombre affiché) par rapport aux nombre de bombes voisines, sauf si c'est une bombe
 func increment_value() -> void:
